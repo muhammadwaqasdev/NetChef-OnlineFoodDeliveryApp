@@ -10,17 +10,21 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 
-import '../views/about/about_view.dart';
-import '../views/dashboard/dashboard_view.dart';
-import '../views/home/home_view.dart';
+import '../views/auth/login/login_view.dart';
+import '../views/auth/signup/signup_view.dart';
 import '../views/splash/splash_view.dart';
+import '../views/user_side/user_dashboard/user_dashboard_view.dart';
 
 class Routes {
   static const String splashView = '/';
-  static const String dashboardView = '/dashboard-view';
+  static const String loginView = '/login-view';
+  static const String signupView = '/signup-view';
+  static const String userDashboardView = '/user-dashboard-view';
   static const all = <String>{
     splashView,
-    dashboardView,
+    loginView,
+    signupView,
+    userDashboardView,
   };
 }
 
@@ -28,12 +32,10 @@ class StackedRouter extends RouterBase {
   @override
   List<RouteDef> get routes => _routes;
   final _routes = <RouteDef>[
-    RouteDef(
-      Routes.splashView,
-      page: SplashView,
-      generator: SplashViewRouter(),
-    ),
-    RouteDef(Routes.dashboardView, page: DashboardView),
+    RouteDef(Routes.splashView, page: SplashView),
+    RouteDef(Routes.loginView, page: LoginView),
+    RouteDef(Routes.signupView, page: SignupView),
+    RouteDef(Routes.userDashboardView, page: UserDashboardView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -44,43 +46,21 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    DashboardView: (data) {
+    LoginView: (data) {
       return MaterialPageRoute<dynamic>(
-        builder: (context) => DashboardView(),
+        builder: (context) => LoginView(),
         settings: data,
       );
     },
-  };
-}
-
-class SplashViewRoutes {
-  static const String homeView = '/';
-  static const String aboutView = '/about-view';
-  static const all = <String>{
-    homeView,
-    aboutView,
-  };
-}
-
-class SplashViewRouter extends RouterBase {
-  @override
-  List<RouteDef> get routes => _routes;
-  final _routes = <RouteDef>[
-    RouteDef(SplashViewRoutes.homeView, page: HomeView),
-    RouteDef(SplashViewRoutes.aboutView, page: AboutView),
-  ];
-  @override
-  Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
-  final _pagesMap = <Type, StackedRouteFactory>{
-    HomeView: (data) {
+    SignupView: (data) {
       return MaterialPageRoute<dynamic>(
-        builder: (context) => HomeView(),
+        builder: (context) => SignupView(),
         settings: data,
       );
     },
-    AboutView: (data) {
+    UserDashboardView: (data) {
       return MaterialPageRoute<dynamic>(
-        builder: (context) => AboutView(),
+        builder: (context) => UserDashboardView(),
         settings: data,
       );
     },

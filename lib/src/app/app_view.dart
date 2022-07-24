@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter_app/src/base/utils/Constants.dart';
-import 'package:flutter_starter_app/src/services/local/navigation_service.dart';
-import 'package:flutter_starter_app/src/views/splash/splash_view.dart';
+import 'package:net_chef/src/base/utils/constants.dart';
+import 'package:net_chef/src/services/local/navigation_service.dart';
+import 'package:net_chef/src/views/splash/splash_view.dart';
+import 'package:net_chef/src/views/user_side/user_dashboard/user_dashboard_view.dart';
 
 class AppView extends StatelessWidget {
   // This widget is the root of your application.
@@ -15,13 +15,10 @@ class AppView extends StatelessWidget {
       onGenerateRoute: NavService.onGenerateRoute,
       navigatorKey: NavService.key,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(
-
-        ),
-        fontFamily: ''
-      ),
-      home: SplashView(),
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: AppBarTheme(),
+          fontFamily: 'Poppins'),
+      home: UserDashboardView(),
       builder: (context, child) {
         return Stack(
           children: [child!],

@@ -1,4 +1,4 @@
-import 'package:flutter_starter_app/src/models/User.dart';
+import 'package:net_chef/src/models/user.dart';
 import 'package:stacked/stacked.dart';
 
 class AuthService with ReactiveServiceMixin {
