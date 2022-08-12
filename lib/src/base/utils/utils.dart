@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum Gender { MALE, FEMALE }
+enum OrderStatus{PENDING, CREATED, FULFILLED, CLEARED, CANCELED}
 extension UIExt on BuildContext {
   double topSpace() => MediaQuery.of(this).padding.top;
   double appBarHeight() => AppBar().preferredSize.height;

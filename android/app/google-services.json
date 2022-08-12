@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "897834386393",
+    "project_id": "net-chef",
+    "storage_bucket": "net-chef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897834386393:android:d6b9b721a57c341152cfc8",
+        "android_client_info": {
+          "package_name": "com.netchef"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897834386393-nqos3lsnk1lcq1aq38017i79ra3jqtip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.netchef",
+            "certificate_hash": "f30436dd35e3e66c03cb357cbbb5aed059dbf3d8"
+          }
+        },
+        {
+          "client_id": "897834386393-uk47i5009inejl5labr3ndvf0mgbfj2f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.netchef",
+            "certificate_hash": "a4805db5a0e3cbf9edd147b27a44c1895ce771da"
+          }
+        },
+        {
+          "client_id": "897834386393-a1aa233c331c8nt2qjafd4o1tc4qe0j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDI-z8V0lP-N08HBb2zyNRdobrXGYMRehA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897834386393-a1aa233c331c8nt2qjafd4o1tc4qe0j8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

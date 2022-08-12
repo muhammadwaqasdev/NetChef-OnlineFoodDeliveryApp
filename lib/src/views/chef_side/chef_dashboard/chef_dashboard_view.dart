@@ -1,0 +1,193 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:net_chef/generated/images.asset.dart';
+import 'package:net_chef/src/base/utils/utils.dart';
+import 'package:net_chef/src/models/user.dart';
+import 'package:net_chef/src/services/local/navigation_service.dart';
+import 'package:net_chef/src/shared/app_screen.dart';
+import 'package:net_chef/src/shared/chef/chef_app_bar.dart';
+import 'package:net_chef/src/shared/chef/chef_drawer.dart';
+import 'package:net_chef/src/shared/chef/order_tile.dart';
+import 'package:net_chef/src/shared/loading_indicator.dart';
+import 'package:net_chef/src/shared/user/user_app_bar.dart';
+import 'package:net_chef/src/shared/drawer_container.dart';
+import 'package:net_chef/src/shared/search_field.dart';
+import 'package:net_chef/src/shared/spacing.dart';
+import 'package:net_chef/src/shared/user/user_drawer.dart';
+import 'package:net_chef/src/shared/user/resturent_cart.dart';
+import 'package:net_chef/src/styles/app_colors.dart';
+import 'package:net_chef/src/styles/text_theme.dart';
+import 'package:net_chef/src/views/chef_side/chef_dashboard/chef_dashboard_view_model.dart';
+import 'package:net_chef/src/views/user_side/user_dashboard/user_dashboard_view_model.dart';
+import 'package:stacked/stacked.dart';
+
+class ChefDashboardView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<ChefDashboardViewModel>.reactive(
+        builder: (context, model, child) {
+          return DrawerContainer(
+            enableSwipe: true,
+            controller: model.drawerContainerController,
+            drawer: ChefDrawer(
+              onDrawerCloseTap: model.drawerContainerController.toggleDrawer,
+              isGoalSetup: true,
+              user: model.currentUser,
+            ),
+            body: AppScreen(
+                appBar: ChefPrimaryAppBar(
+                  onDrawerIconTap: () =>
+                      model.drawerContainerController.toggleDrawer(),
+                  onSyncTap: () => model.getSync(context),
+                  user: model.currentUser,
+                ),
+                child:(model.isBusy == false) ? Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: context.screenSize().width / 2,
+                              width: context.screenSize().width / 2,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: AppColors.cardOrangeBackgroundShadow,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text("Active Products",style: TextStyling.normalText.copyWith(color: AppColors.white),),
+                                  Text(model.currentUser?.currentProducts.toString() ?? "0",style: TextStyling.h2.copyWith(color: AppColors.white),),
+                                ],
+                              ),
+                            ),
+                          ),
+                          HorizontalSpacing(10),
+                          Expanded(
+                            child: Container(
+                              height: context.screenSize().width / 2,
+                              width: context.screenSize().width / 2,
+                              decoration: BoxDecoration(
+                                color: AppColors.red,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: AppColors.cardOrangeBackgroundShadow,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text("Active Categories",style: TextStyling.normalText.copyWith(color: AppColors.white),),
+                                  Text(model.currentUser?.currentCategories.toString() ?? "0",style: TextStyling.h2.copyWith(color: AppColors.white),),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    VerticalSpacing(10),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: context.screenSize().width / 2,
+                              width: context.screenSize().width / 2,
+                              decoration: BoxDecoration(
+                                color: AppColors.blue,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: AppColors.cardOrangeBackgroundShadow,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text("Orders Pending In Count",style: TextStyling.normalText.copyWith(color: AppColors.white),),
+                                  Text(model.currentUser?.ordersPendingCount.toString() ?? "0",style: TextStyling.h2.copyWith(color: AppColors.white),),
+                                ],
+                              ),
+                            ),
+                          ),
+                          HorizontalSpacing(10),
+                          Expanded(
+                            child: Container(
+                              height: context.screenSize().width / 2,
+                              width: context.screenSize().width / 2,
+                              decoration: BoxDecoration(
+                                color: AppColors.secondary,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: AppColors.cardOrangeBackgroundShadow,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text("Orders Pending In Amount",style: TextStyling.normalText.copyWith(color: AppColors.white),),
+                                  Text(model.currentUser?.ordersPendingAmount.toString() ?? "0",style: TextStyling.h2.copyWith(color: AppColors.white),),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Pending Orders",
+                            style: TextStyling.h2
+                                .copyWith(color: AppColors.primary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: context.screenSize().height - 540,
+                      child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: model.ordersData.length,
+                          itemBuilder: (context, index) {
+                            return OrderTile(date: model.ordersData[index].updatedBy.toString(), orderStatus: OrderStatus.PENDING, orderId: model.ordersData[index].id.toString(), amount: model.ordersData[index].totalAmount.toString(),);
+                          }),
+                    ),
+                  ],
+                ) : Center(child: LoadingIndicator(color: AppColors.primary,size: 48,),)),
+          );
+        },
+        viewModelBuilder: () => ChefDashboardViewModel(),
+        onModelReady: (model) => model.init(context));
+  }
+
+  _categoryTile({required int index, required int totalCount, required Function onTap}) {
+    return InkWell(
+      onTap: (){
+        onTap();
+      },
+      child: Container(
+        height: 30,
+        margin: EdgeInsets.fromLTRB(
+            (index == 0) ? 19 : 10, 0, (index == (totalCount - 1)) ? 20 : 0, 0),
+        decoration: BoxDecoration(
+            color: AppColors.primary, borderRadius: BorderRadius.circular(30)),
+        padding: EdgeInsets.fromLTRB(12, 0, 15, 0),
+        child: Row(
+          children: [
+            Image.asset(
+              Images.burgerVector,
+              height: 24,
+              width: 24,
+            ),
+            HorizontalSpacing(10),
+            Text(
+              "Burger",
+              style: TextStyling.normalText.copyWith(color: AppColors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -8,4 +8,5 @@ class ApiService {
     var dio = Dio();
     _apiClient = ApiClient(dio);
   }
+
 }

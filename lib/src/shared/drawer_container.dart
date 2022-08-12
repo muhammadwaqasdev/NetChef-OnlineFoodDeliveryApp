@@ -7,6 +7,9 @@ class DrawerContainerController {
 
 enum DrawerGestureMode { NONE, OPEN_AND_CLOSE, CLOSE_ONLY, OPEN_ONLY }
 
+
+
+
 class DrawerContainer extends StatefulWidget {
   final Widget drawer;
   final Widget body;
@@ -21,7 +24,7 @@ class DrawerContainer extends StatefulWidget {
       {required this.body,
       required this.drawer,
       this.controller,
-      this.width = 100,
+      this.width = 80,
       this.enableSwipe = false,
       this.animationDuration = const Duration(milliseconds: 250),
       this.animationCurve = Curves.easeInOutQuint,
@@ -108,6 +111,8 @@ class _DrawerContainerState extends State<DrawerContainer>
     if (widget.controller != null) {
       widget.controller!.toggleDrawer = () =>
           (animation.value < 0) ? controller.reverse() : controller.forward();
+
+
     }
   }
 }

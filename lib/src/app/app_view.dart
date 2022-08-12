@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:net_chef/src/base/utils/constants.dart';
 import 'package:net_chef/src/services/local/navigation_service.dart';
 import 'package:net_chef/src/views/splash/splash_view.dart';
-import 'package:net_chef/src/views/user_side/user_dashboard/user_dashboard_view.dart';
 
 class AppView extends StatelessWidget {
   // This widget is the root of your application.
@@ -16,9 +15,8 @@ class AppView extends StatelessWidget {
       navigatorKey: NavService.key,
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
-          appBarTheme: AppBarTheme(),
-          fontFamily: 'Poppins'),
-      home: UserDashboardView(),
+          appBarTheme: AppBarTheme(),),
+      home: SplashView(),
       builder: (context, child) {
         return Stack(
           children: [child!],
