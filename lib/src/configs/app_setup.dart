@@ -6,6 +6,7 @@ import 'package:net_chef/src/services/remote/firebase_service.dart';
 import 'package:net_chef/src/views/auth/forgot_password/forgot_password_view.dart';
 import 'package:net_chef/src/views/auth/login/login_view.dart';
 import 'package:net_chef/src/views/auth/signup/signup_view.dart';
+import 'package:net_chef/src/views/chef_side/chef_add_products/chef_add_products_view.dart';
 import 'package:net_chef/src/views/chef_side/chef_dashboard/chef_dashboard_view.dart';
 import 'package:net_chef/src/views/chef_side/chef_orders/chef_orders_view.dart';
 import 'package:net_chef/src/views/chef_side/chef_products/chef_products_view.dart';
@@ -36,6 +37,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: ChefDashboardView),
     MaterialRoute(page: ChefOrdersView),
     MaterialRoute(page: ChefProductsView),
+    MaterialRoute(page: ChefAddProductsView),
   ],
   dependencies: [
     // Lazy singletons

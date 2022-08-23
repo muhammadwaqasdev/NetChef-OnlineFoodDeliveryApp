@@ -18,6 +18,7 @@ class RestaurantsProductsView extends StatelessWidget {
     return ViewModelBuilder<RestaurantsProductsViewModel>.reactive(
         builder: (context, model, child) {
           return AppScreen(
+            isHereFloatButton: true,
               isPrimary: false,
               child: Stack(
                 children: [

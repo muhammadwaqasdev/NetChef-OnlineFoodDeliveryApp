@@ -41,7 +41,7 @@ class ChefProductsView extends StatelessWidget {
                 appBar: ChefPrimaryAppBar(
                   onDrawerIconTap: () =>
                       model.drawerContainerController.toggleDrawer(),
-                  onSyncTap: () => (){},
+                  onSyncTap: () => NavService.chefAddProducts(),
                   isProductPage: true,
                   user: model.currentUser,
                 ),
@@ -63,9 +63,9 @@ class ChefProductsView extends StatelessWidget {
                       height: context.screenSize().height - 165,
                       child: ListView.builder(
                           physics: BouncingScrollPhysics(),
-                          itemCount: 10,
+                          itemCount: model.productData.length,
                           itemBuilder: (context, index) {
-                            return ChefProductCart(onTap: (){});
+                            return ChefProductCart(onTap: (){}, title: model.productData[index].pName ?? "", image: model.productData[index].pic ?? "", price: model.productData[index].pPrice ?? "",);
                           }),
                     ),
                   ],

@@ -11,10 +11,8 @@ class CustomerUser {
   int? orderCount;
   int? totalOrderAmount;
   String? phoneNumber;
-  String? gender;
   String? profile;
 
-  Gender get userGender => gender == "Male" ? Gender.MALE : Gender.FEMALE;
 
   CustomerUser(
       {this.address,
@@ -25,8 +23,7 @@ class CustomerUser {
         this.identityNumber,
         this.orderCount,
         this.totalOrderAmount,
-        this.phoneNumber,
-        this.gender});
+        this.phoneNumber,});
 
   CustomerUser.fromJson(Map<String, dynamic> json) {
     address = json['address'];
@@ -38,7 +35,6 @@ class CustomerUser {
     orderCount = json['orderCount'];
     totalOrderAmount = json['totalOrderAmount'];
     phoneNumber = json['phoneNumber'];
-    gender = json['gender'];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,7 +48,6 @@ class CustomerUser {
     data['orderCount'] = this.orderCount;
     data['totalOrderAmount'] = this.totalOrderAmount;
     data['phoneNumber'] = this.phoneNumber;
-    data['gender'] = this.gender;
     return data;
   }
 }
@@ -64,7 +59,6 @@ class ChefUser {
   String? fullName;
   String? identityNumber;
   String? phoneNumber;
-  String? gender;
   String? businessName;
   String? businessIcon;
   int? currentCategories;
@@ -82,7 +76,6 @@ class ChefUser {
     this.fullName,
     this.identityNumber,
     this.phoneNumber,
-    this.gender,
     this.businessName,
     this.businessIcon,
     this.currentCategories,
@@ -101,7 +94,6 @@ class ChefUser {
     id = json['id'];
     identityNumber = json['identityNumber'];
     phoneNumber = json['phoneNumber'];
-    gender = json['gender'];
     businessName = json['businessName'];
     businessIcon = json['businessIcon'];
     currentCategories = json['currentCategories'];
@@ -121,7 +113,6 @@ class ChefUser {
     data['id'] = this.id;
     data['identityNumber'] = this.identityNumber;
     data['phoneNumber'] = this.phoneNumber;
-    data['gender'] = this.gender;
     data['businessName'] = this.businessName;
     data['businessIcon'] = this.businessIcon;
     data['currentCategories'] = this.currentCategories;

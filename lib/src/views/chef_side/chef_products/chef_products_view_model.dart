@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:net_chef/src/models/order.dart';
+import 'package:net_chef/src/models/product.dart';
 import 'package:net_chef/src/models/user.dart';
 import 'package:net_chef/src/services/local/base/auth_view_model.dart';
 import 'package:net_chef/src/services/remote/base/firebase_view_model.dart';
@@ -13,12 +14,14 @@ class ChefProductsViewModel extends ReactiveViewModel with AuthViewModel, Fireba
   DrawerContainerController drawerContainerController =
   DrawerContainerController();
 
-  List<Order> _ordersData = [];
 
-  List<Order> get ordersData => _ordersData;
 
-  set ordersData(List<Order> value) {
-    _ordersData = value;
+  List<ProductModel> _productData = [];
+
+  List<ProductModel> get productData => _productData;
+
+  set productData(List<ProductModel> value) {
+    _productData = value;
   }
 
   getSync(BuildContext context) async{
@@ -32,14 +35,21 @@ class ChefProductsViewModel extends ReactiveViewModel with AuthViewModel, Fireba
     }
     setBusy(false);
   }
+
+  Future<void> getProducts(BuildContext context,String userId)async {
+
+    List<ProductModel> isAdded = await firebaseService.getProducts(userId, context);
+
+    if(isAdded.isNotEmpty){
+      productData = isAdded;
+      notifyListeners();
+    }
+  }
   init(BuildContext context){
     currentUser = authService.chefUser;
     if(currentUser!.id!.isNotEmpty){
-      getPendingOrders(currentUser!.id!);
+      getProducts(context, currentUser!.id!);
     }
   }
 
-  getPendingOrders(String id) async{
-    ordersData = await firebaseService.getOrdersByVender(id);
-  }
 }

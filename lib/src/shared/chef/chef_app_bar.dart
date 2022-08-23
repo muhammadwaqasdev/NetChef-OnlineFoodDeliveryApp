@@ -12,12 +12,16 @@ class ChefPrimaryAppBar extends PreferredSize {
   final GestureTapCallback? onDrawerIconTap;
   final GestureTapCallback? onSyncTap;
   final bool? isProductPage;
+  final bool isSyncShow;
   final ChefUser? user;
+  final String? icon;
 
   const ChefPrimaryAppBar({
+    this.icon,
     this.onSyncTap,
     this.onDrawerIconTap,
     this.isProductPage = false,
+    this.isSyncShow = true,
     this.user,
   }) : super(
             child: const SizedBox.shrink(),
@@ -42,7 +46,7 @@ class ChefPrimaryAppBar extends PreferredSize {
               width: 48,
               child: Center(
                 child: Image.asset(
-                  Images.menuOragneVector,
+                  icon ?? Images.menuOragneVector,
                   width: 30,
                   height: 30,
                 ),
@@ -54,20 +58,23 @@ class ChefPrimaryAppBar extends PreferredSize {
               Text(user?.businessName.toString() ?? "Chef",style: TextStyling.h2.copyWith(color: AppColors.primary),),
             ],
           ),
-          GestureDetector(
-              onTap: onSyncTap,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: AppColors.lightGrey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(12)
-                ),
-                height: 48,
-                width: 48,
-                child: Center(
-                  child: (isProductPage == true) ? Icon(Icons.add,size: 36,color: AppColors.primary,) : Icon(Icons.sync,size: 30,color: AppColors.primary,),
+          Visibility(
+            visible: isSyncShow,
+            child: GestureDetector(
+                onTap: onSyncTap,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppColors.lightGrey.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(12)
+                  ),
+                  height: 48,
+                  width: 48,
+                  child: Center(
+                    child: (isProductPage == true) ? Icon(Icons.add,size: 36,color: AppColors.primary,) : Icon(Icons.sync,size: 30,color: AppColors.primary,),
+                  ),
                 ),
               ),
-            ),
+          ),
         ],
       ),
     );

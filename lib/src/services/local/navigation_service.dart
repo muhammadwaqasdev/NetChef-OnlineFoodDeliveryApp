@@ -63,4 +63,7 @@ class NavService {
 
   static Future<dynamic>? chefProducts({dynamic arguments}) => _navigationService!
       .navigateTo(Routes.chefProductsView, arguments: arguments);
+
+  static Future<dynamic>? chefAddProducts({dynamic arguments}) => _navigationService!
+      .navigateTo(Routes.chefAddProductsView, arguments: arguments);
 }

@@ -60,10 +60,6 @@ class ChefDrawer extends StatelessWidget {
                   onTap: () {
                 NavService.chefProducts();
                   }),
-              _iconControl(context,
-                  icon: Images.settingsWhiteVector,
-                  size: Size(30, 30),
-                  onTap: () {}),
             ],
           ),
           _iconControl(context, icon: Images.logoutVector, size: Size(30, 30),

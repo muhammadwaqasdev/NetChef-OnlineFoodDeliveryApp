@@ -49,7 +49,6 @@ class SignupViewModel extends ReactiveViewModel with FirebaseViewModel, AuthView
       orderCount: 0,
       totalOrderAmount: 0,
       phoneNumber: phoneNumber.text,
-      gender: gender.text,
       profile: profilePicture,
     );
     bool isDone = await firebaseService.signUpCustomerUser(user, password.text,selectedImage);
@@ -68,7 +67,6 @@ class SignupViewModel extends ReactiveViewModel with FirebaseViewModel, AuthView
       fullName: fullName.text,
       identityNumber: identityNumber.text,
       phoneNumber: phoneNumber.text,
-      gender: gender.text,
       businessName: businessName.text,
       businessIcon: profilePicture,
       currentCategories: 0,

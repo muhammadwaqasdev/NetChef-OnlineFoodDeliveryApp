@@ -129,13 +129,6 @@ class SignupView extends StatelessWidget {
                                               hint: "Enter your identity number", onChanged: (String value) {  },),
                                             CustomInput(
                                               isPassword: false,
-                                              inputType: TextInputType.text,
-                                              label: "Gender",
-                                              controller: model.gender,
-                                              onTap: () {},
-                                              hint: "Enter your gender", onChanged: (String value) {  },),
-                                            CustomInput(
-                                              isPassword: false,
                                               label: "Email Address",
                                               inputType: TextInputType.emailAddress,
                                               controller: model.email,

@@ -43,6 +43,8 @@ dependencies:
   firebase_storage: ^10.3.4
   shared_preferences: ^2.0.15
   json_annotation: any
+  uuid: ^3.0.6
+  top_snackbar_flutter: ^2.1.1
 
 dev_dependencies:
   build_runner: ^2.0.4

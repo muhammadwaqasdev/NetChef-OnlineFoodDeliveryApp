@@ -6,9 +6,12 @@ import 'package:net_chef/src/styles/app_colors.dart';
 import 'package:net_chef/src/styles/text_theme.dart';
 
 class ChefProductCart extends StatelessWidget {
+  final String title;
+  final String price;
+  final String image;
   final Function onTap;
 
-  const ChefProductCart({Key? key, required this.onTap}) : super(key: key);
+  const ChefProductCart({Key? key, required this.onTap, required this.title, required this.price, required this.image}) : super(key: key);
 
 
   @override
@@ -36,7 +39,7 @@ class ChefProductCart extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20), bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0), ),
                 ),
-                child: Image.asset(Images.foodImage,fit: BoxFit.cover,),
+                child: Image.network(image,fit: BoxFit.cover,),
               ),
             ),
             VerticalSpacing(),
@@ -47,12 +50,12 @@ class ChefProductCart extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Zinger Burger",
+                      title,
                       style: TextStyling.h4,
                     ),
                     VerticalSpacing(5),
                     Text(
-                      "Rs.250",
+                      "Rs.$price",
                       style: TextStyling.paragraphTheme.copyWith(color: AppColors.darkGrey),
                     ),
 

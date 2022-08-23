@@ -19,12 +19,12 @@ class LoginViewModel extends ReactiveViewModel with FirebaseViewModel, AuthViewM
   void checkValidate(BuildContext context) {
     if (m.Form.of(context)?.validate() ?? false) {
       setBusy(true);
-      isCustomerSelected ? signInCustomer() : signInChef();
+      isCustomerSelected ? signInCustomer(context) : signInChef(context);
     }
   }
 
-  Future<void> signInCustomer() async {
-    bool isDone = await firebaseService.signInCustomerUser(email.text, password.text);
+  Future<void> signInCustomer(BuildContext context) async {
+    bool isDone = await firebaseService.signInCustomerUser(email.text, password.text,context);
     if(isDone){
       authService.customerUser = await firebaseService.getCustomerUser(FirebaseAuth.instance.currentUser?.uid ?? "");
       NavService.userDashboard();
@@ -32,16 +32,17 @@ class LoginViewModel extends ReactiveViewModel with FirebaseViewModel, AuthViewM
     }else{
       setBusy(false);
     }
+    setBusy(false);
   }
-  Future<void> signInChef() async {
-    bool isDone = await firebaseService.signInChefUser(email.text, password.text);
+  Future<void> signInChef(BuildContext context) async {
+    bool isDone = await firebaseService.signInChefUser(email.text, password.text, context);
     if(isDone){
       authService.chefUser = await firebaseService.getChefUser(FirebaseAuth.instance.currentUser?.uid ?? "");
       NavService.chefDashboard();
       setBusy(false);
     }else{
       setBusy(false);
-
     }
+    setBusy(false);
   }
 }
