@@ -17,7 +17,7 @@ class AppView extends StatelessWidget {
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
           appBarTheme: AppBarTheme(),),
-      home: MakeOwnView(),
+      home: SplashView(),
       builder: (context, child) {
         return Stack(
           children: [child!],
