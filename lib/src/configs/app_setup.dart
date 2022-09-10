@@ -1,4 +1,5 @@
 import 'package:net_chef/src/services/local/auth_service.dart';
+import 'package:net_chef/src/services/local/cart_service.dart';
 import 'package:net_chef/src/services/local/connectivity_service.dart';
 import 'package:net_chef/src/services/local/keyboard_service.dart';
 import 'package:net_chef/src/services/remote/api_service.dart';
@@ -11,6 +12,7 @@ import 'package:net_chef/src/views/chef_side/chef_dashboard/chef_dashboard_view.
 import 'package:net_chef/src/views/chef_side/chef_orders/chef_orders_view.dart';
 import 'package:net_chef/src/views/chef_side/chef_products/chef_products_view.dart';
 import 'package:net_chef/src/views/splash/splash_view.dart';
+import 'package:net_chef/src/views/user_side/make_own/make_own_view.dart';
 import 'package:net_chef/src/views/user_side/product_detail/product_detail_view.dart';
 import 'package:net_chef/src/views/user_side/restaurants_products/restaurants_products_view.dart';
 import 'package:net_chef/src/views/user_side/user_cart/user_cart_view.dart';
@@ -27,11 +29,12 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: ForgotPasswordView),
 
 
-    MaterialRoute(page: UserDashboardView),
+    CustomRoute(page: UserDashboardView),
     MaterialRoute(page: UserCategoriesView),
     MaterialRoute(page: UserCartView),
     MaterialRoute(page: RestaurantsProductsView),
     MaterialRoute(page: ProductDetailView),
+    MaterialRoute(page: MakeOwnView),
 
 
     MaterialRoute(page: ChefDashboardView),
@@ -49,6 +52,7 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: KeyboardService),
     LazySingleton(classType: ApiService),
     LazySingleton(classType: FirebaseService),
+    LazySingleton(classType: CartService),
   ],
 )
 class AppSetup {

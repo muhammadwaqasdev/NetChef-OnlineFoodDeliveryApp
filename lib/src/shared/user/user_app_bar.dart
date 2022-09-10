@@ -1,7 +1,11 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:net_chef/generated/images.asset.dart';
 import 'package:net_chef/src/configs/app_setup.locator.dart';
+import 'package:net_chef/src/models/user.dart';
 import 'package:net_chef/src/services/local/auth_service.dart';
+import 'package:net_chef/src/services/local/base/cart_service_view_model.dart';
+import 'package:net_chef/src/services/local/cart_service.dart';
 import 'package:net_chef/src/shared/drawer_container.dart';
 import 'package:net_chef/src/shared/load_image.dart';
 import 'package:net_chef/src/styles/app_colors.dart';
@@ -10,8 +14,10 @@ import 'package:net_chef/src/styles/text_theme.dart';
 class UserPrimaryAppBar extends PreferredSize {
   final GestureTapCallback? onDrawerIconTap;
   final GestureTapCallback? onGoCartTap;
+  final CustomerUser? user;
 
   const UserPrimaryAppBar({
+    this.user,
     this.onGoCartTap,
     this.onDrawerIconTap,
   }) : super(
@@ -51,7 +57,7 @@ class UserPrimaryAppBar extends PreferredSize {
                   Images.location,
                   height: 36,
                 ),
-                Text("DHA Phase 6",style: TextStyling.normalText.copyWith(color: AppColors.darkGrey),),
+                Text(user?.address ?? "",style: TextStyling.normalText.copyWith(color: AppColors.darkGrey),),
               ],
             ),
           ),
@@ -84,12 +90,14 @@ class UserSecondaryAppBar extends PreferredSize {
   final GestureTapCallback? onProfileTap;
   final bool? isCart;
   final String? title;
+  final int? cartCount;
 
   const UserSecondaryAppBar({
     required this.onBackTap,
     required this.onProfileTap,
     required this.isCart,
-    this.title = ""
+    this.title = "",
+    this.cartCount = 0
   }) : super(
       child: const SizedBox.shrink(),
       preferredSize: const Size.fromHeight(90));
@@ -127,18 +135,21 @@ class UserSecondaryAppBar extends PreferredSize {
           ),
           (isCart == false) ? GestureDetector(
             onTap: onProfileTap,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.lightGrey,
-                  borderRadius: BorderRadius.circular(12)
-              ),
-              height: 48,
-              width: 48,
-              child: Center(
-                child: Image.asset(
-                  Images.cartVector,
-                  width: 24,
-                  height: 24,
+            child: Badge(
+              badgeContent: Text(cartCount.toString()),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: AppColors.lightGrey,
+                    borderRadius: BorderRadius.circular(12)
+                ),
+                height: 48,
+                width: 48,
+                child: Center(
+                  child: Image.asset(
+                    Images.cartVector,
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
               ),
             ),

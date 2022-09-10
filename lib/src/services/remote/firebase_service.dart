@@ -21,7 +21,8 @@ class FirebaseService {
   AuthService authService = AuthService();
 
   //SignIn Section
-  Future<bool> signInCustomerUser(String email, String password, BuildContext context) async {
+  Future<bool> signInCustomerUser(
+      String email, String password, BuildContext context) async {
     try {
       var user = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email.trim(), password: password);
@@ -33,8 +34,7 @@ class FirebaseService {
         showTopSnackBar(
           context,
           CustomSnackBar.error(
-            message:
-            "User Not Exist in Customer Data",
+            message: "User Not Exist in Customer Data",
           ),
         );
         return false;
@@ -45,8 +45,7 @@ class FirebaseService {
         showTopSnackBar(
           context,
           CustomSnackBar.error(
-            message:
-            e.toString(),
+            message: e.toString(),
           ),
         );
       } else if (e.code == "email-already-in-use") {
@@ -54,8 +53,7 @@ class FirebaseService {
         showTopSnackBar(
           context,
           CustomSnackBar.error(
-            message:
-            e.toString(),
+            message: e.toString(),
           ),
         );
       }
@@ -65,15 +63,15 @@ class FirebaseService {
       showTopSnackBar(
         context,
         CustomSnackBar.error(
-          message:
-          e.toString(),
+          message: e.toString(),
         ),
       );
       return false;
     }
   }
 
-  Future<bool> signInChefUser(String email, String password,BuildContext context) async {
+  Future<bool> signInChefUser(
+      String email, String password, BuildContext context) async {
     try {
       var user = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email.trim(), password: password);
@@ -85,8 +83,7 @@ class FirebaseService {
         showTopSnackBar(
           context,
           CustomSnackBar.error(
-            message:
-            "User Not Exist in Chef Data",
+            message: "User Not Exist in Chef Data",
           ),
         );
         return false;
@@ -97,8 +94,7 @@ class FirebaseService {
         showTopSnackBar(
           context,
           CustomSnackBar.error(
-            message:
-            e.toString(),
+            message: e.toString(),
           ),
         );
       } else if (e.code == "email-already-in-use") {
@@ -106,8 +102,7 @@ class FirebaseService {
         showTopSnackBar(
           context,
           CustomSnackBar.error(
-            message:
-            e.toString(),
+            message: e.toString(),
           ),
         );
       }
@@ -117,8 +112,7 @@ class FirebaseService {
       showTopSnackBar(
         context,
         CustomSnackBar.error(
-          message:
-          e.toString(),
+          message: e.toString(),
         ),
       );
       return false;
@@ -395,8 +389,8 @@ class FirebaseService {
     }
   }
 
-
-  Future<bool> createProduct(ProductModel productModel, File? imageFile, BuildContext context, String userId, int currentProduct) async {
+  Future<bool> createProduct(ProductModel productModel, File? imageFile,
+      BuildContext context, String userId, int currentProduct) async {
     try {
       String? imageUrl = null;
       if (imageFile != null) {
@@ -408,7 +402,8 @@ class FirebaseService {
         var uploadTask = await FirebaseStorage.instance
             .ref()
             .child("productPicture")
-            .child("${productModel.pName.toString()}-${productModel.id.toString()}.jpg")
+            .child(
+                "${productModel.pName.toString()}-${productModel.id.toString()}.jpg")
             .putFile(imageFile, metadata)
             .catchError((error) {
           status = false;
@@ -425,6 +420,7 @@ class FirebaseService {
         pCat: productModel.pCat,
         pDes: productModel.pDes,
         pic: imageUrl,
+        ingrediantsModel: productModel.ingrediantsModel
       );
       await FirebaseFirestore.instance
           .collection("ChefUser")
@@ -438,17 +434,14 @@ class FirebaseService {
       await FirebaseFirestore.instance
           .collection("ChefUser")
           .doc(userId)
-          .update({
-        "currentProducts": currentProduct + 1
-      });
+          .update({"currentProducts": currentProduct + 1});
 
       return true;
     } on FirebaseAuthException catch (e) {
       showTopSnackBar(
         context,
         CustomSnackBar.error(
-          message:
-          e.toString(),
+          message: e.toString(),
         ),
       );
       return false;
@@ -456,48 +449,17 @@ class FirebaseService {
       showTopSnackBar(
         context,
         CustomSnackBar.error(
-          message:
-          e.toString(),
+          message: e.toString(),
         ),
       );
       return false;
     }
   }
 
-  Future<List<ProductModel>> getProducts(String userId, BuildContext context) async {
-    List<ProductModel> productModel = [];
+  Future<bool> createCategory(String name, BuildContext context, String userId, int currentCat) async {
     try {
-      List<ProductModel> data = await FirebaseFirestore.instance
-          .collection("ChefUser")
-          .doc(userId)
-          .collection("Products")
-          .get()
-          .then((querySnapshot) {
-        querySnapshot.docs.forEach((docSnap) {
-          productModel.add(ProductModel.fromJson(docSnap.data() as Map<String, dynamic>));
-        });
-        return productModel;
-      });
-
-      return productModel;
-    } catch (e) {
-      showTopSnackBar(
-        context,
-        CustomSnackBar.error(
-          message:
-          e.toString(),
-        ),
-      );
-      return productModel;
-    }
-  }
-
-  Future<bool> createCategory(String name, BuildContext context, String userId,int currentCat) async {
-    try {
-      CategoryModel categoryModel = CategoryModel(
-        id: "$userId-$name",
-        pName: name
-      );
+      CategoryModel categoryModel =
+      CategoryModel(id: "$userId-$name", pName: name);
       await FirebaseFirestore.instance
           .collection("ChefUser")
           .doc(userId)
@@ -507,22 +469,17 @@ class FirebaseService {
           .then((value) => print("User Added"))
           .catchError((error) => print("Failed to add user: $error"));
 
-
       await FirebaseFirestore.instance
           .collection("ChefUser")
           .doc(userId)
-          .update({
-        "currentCategories": currentCat + 1
-      });
-
+          .update({"currentCategories": currentCat + 1});
 
       return true;
     } on FirebaseAuthException catch (e) {
       showTopSnackBar(
         context,
         CustomSnackBar.error(
-          message:
-          e.toString(),
+          message: e.toString(),
         ),
       );
       return false;
@@ -530,13 +487,16 @@ class FirebaseService {
       showTopSnackBar(
         context,
         CustomSnackBar.error(
-          message:
-          e.toString(),
+          message: e.toString(),
         ),
       );
       return false;
     }
   }
+
+
+
+
 
   Future<List<CategoryModel>> getCategoryForChef(String userId, BuildContext context) async {
     List<CategoryModel> categoryModel = [];
@@ -548,7 +508,8 @@ class FirebaseService {
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((docSnap) {
-          categoryModel.add(CategoryModel.fromJson(docSnap.data() as Map<String, dynamic>));
+          categoryModel.add(
+              CategoryModel.fromJson(docSnap.data() as Map<String, dynamic>));
         });
         return categoryModel;
       });
@@ -558,11 +519,213 @@ class FirebaseService {
       showTopSnackBar(
         context,
         CustomSnackBar.error(
-          message:
-          e.toString(),
+          message: e.toString(),
         ),
       );
       return categoryModel;
     }
   }
+
+  Future<List<CategoryModel>> getCategoryForUser(BuildContext context) async {
+    List<CategoryModel> categoryModel = [];
+
+    try {
+      List list_of_docs = await FirebaseFirestore.instance
+          .collection("ChefUser")
+          .get()
+          .then((val) => val.docs);
+
+      for (int i = 0; i < list_of_docs.length; i++) {
+        await FirebaseFirestore.instance
+            .collection("ChefUser")
+            .doc(list_of_docs[i].data()["id"])
+            .collection("Category")
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((docSnap) {
+            categoryModel.add(
+                CategoryModel.fromJson(docSnap.data() as Map<String, dynamic>));
+          });
+          return categoryModel;
+        });
+      }
+
+      return categoryModel;
+    } catch (e) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: e.toString(),
+        ),
+      );
+      return categoryModel;
+    }
+  }
+
+
+
+  Future<List<ProductModel>> getProductsByChef(String userId, BuildContext context) async {
+    List<ProductModel> productModel = [];
+    try {
+      List<ProductModel> data = await FirebaseFirestore.instance
+          .collection("ChefUser")
+          .doc(userId)
+          .collection("Products")
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((docSnap) {
+          productModel.add(
+              ProductModel.fromJson(docSnap.data() as Map<String, dynamic>));
+        });
+        return productModel;
+      });
+
+      return productModel;
+    } catch (e) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: e.toString(),
+        ),
+      );
+      return productModel;
+    }
+  }
+
+  Future<List<ChefUser>> getTopRestaurant(BuildContext context) async {
+    List<ChefUser> chefUser = [];
+
+    try {
+
+        await FirebaseFirestore.instance
+            .collection("ChefUser")
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((docSnap) {
+            chefUser.add(
+                ChefUser.fromJson(docSnap.data() as Map<String, dynamic>));
+          });
+          return chefUser;
+        });
+
+      return chefUser;
+
+
+
+    } catch (e) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: e.toString(),
+        ),
+      );
+      return chefUser;
+    }
+  }
+  
+  Future<List<ProductModel>> getProductsByCategory(String categoryId, BuildContext context) async {
+    List<ProductModel> productModel = [];
+
+    try {
+      String catName = categoryId.replaceRange(0,(categoryId.indexOf("-")+1),"");
+      List list_of_docs = await FirebaseFirestore.instance
+          .collection("ChefUser")
+          .get()
+          .then((val) => val.docs);
+
+      for (int i = 0; i < list_of_docs.length; i++) {
+        await FirebaseFirestore.instance
+            .collection("ChefUser")
+            .doc(list_of_docs[i].data()["id"])
+            .collection("Products")
+            .where('pCat', isEqualTo: catName)
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((docSnap) {
+            productModel.add(
+                ProductModel.fromJson(docSnap.data() as Map<String, dynamic>));
+          });
+          return productModel;
+        });
+      }
+
+      return productModel;
+    } catch (e) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: e.toString(),
+        ),
+      );
+      return productModel;
+    }
+  }
+
+  Future<List<ProductModel>> getAllProducts(BuildContext context) async {
+    List<ProductModel> productModel = [];
+
+    try {
+      List list_of_docs = await FirebaseFirestore.instance
+          .collection("ChefUser")
+          .get()
+          .then((val) => val.docs);
+
+      for (int i = 0; i < list_of_docs.length; i++) {
+        await FirebaseFirestore.instance
+            .collection("ChefUser")
+            .doc(list_of_docs[i].data()["id"])
+            .collection("Products")
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((docSnap) {
+            productModel.add(
+                ProductModel.fromJson(docSnap.data() as Map<String, dynamic>));
+          });
+          return productModel;
+        });
+      }
+
+      return productModel;
+    } catch (e) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: e.toString(),
+        ),
+      );
+      return productModel;
+    }
+  }
+
+
+  Future<bool> createOrder(BuildContext context, Order order) async {
+    try {
+
+      await FirebaseFirestore.instance
+          .collection("Order")
+          .doc(order.id)
+          .set(order.toJson())
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
+
+      return true;
+    } on FirebaseAuthException catch (e) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: e.toString(),
+        ),
+      );
+      return false;
+    } catch (e) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: e.toString(),
+        ),
+      );
+      return false;
+    }
+  }
+
 }

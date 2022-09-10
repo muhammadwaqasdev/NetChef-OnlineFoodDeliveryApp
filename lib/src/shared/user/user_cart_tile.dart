@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:net_chef/src/models/cart_product_model.dart';
 import 'package:net_chef/src/shared/spacing.dart';
 import 'package:net_chef/src/styles/app_colors.dart';
 import 'package:net_chef/src/styles/text_theme.dart';
 
 class CartTile extends StatelessWidget {
-  const CartTile({Key? key}) : super(key: key);
+  final CartProductModel cartProductModel;
+  final Function onDelete;
+  const CartTile({Key? key, required this.cartProductModel, required this.onDelete}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 100,
       decoration: BoxDecoration(
         color: AppColors.white,
         boxShadow: AppColors.cardOrangeBackgroundShadow,
@@ -24,27 +27,8 @@ class CartTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.white,
-                      boxShadow: AppColors.cardGreyBackgroundShadow,
-                    ),
-                    child: ClipRRect(
-                      // height: 50,
-                      // width: 50,
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.network(
-                        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  HorizontalSpacing(),
                   Text(
-                    "Zinger Burger",
+                    cartProductModel.productName.toString(),
                     style: TextStyling.h2
                         .copyWith(color: AppColors.black.withOpacity(0.6)),
                   ),
@@ -55,7 +39,7 @@ class CartTile extends StatelessWidget {
                         .copyWith(color: AppColors.black),
                   ),
                   Text(
-                    "10",
+                    cartProductModel.quantity.toString(),
                     style: TextStyling.normalText
                         .copyWith(color: AppColors.primary),
                   ),
@@ -71,7 +55,7 @@ class CartTile extends StatelessWidget {
                             .copyWith(color: AppColors.black),
                       ),
                       Text(
-                        "150 PKR",
+                        "${cartProductModel.eachItemPrice.toString()} PKR",
                         style: TextStyling.h4
                             .copyWith(color: AppColors.primary),
                       ),
@@ -86,55 +70,11 @@ class CartTile extends StatelessWidget {
                             .copyWith(color: AppColors.black),
                       ),
                       Text(
-                        "1500 PKR",
+                        "${cartProductModel.totalItemPrice.toString()} PKR",
                         style: TextStyling.h4
                             .copyWith(color: AppColors.primary),
                       ),
                     ],
-                  ),
-                  VerticalSpacing(5),
-                  Row(
-                    children: [
-                      Text(
-                        "GST 18%: ",
-                        style: TextStyling.h4
-                            .copyWith(color: AppColors.black),
-                      ),
-                      Text(
-                        "250 PKR",
-                        style: TextStyling.h4
-                            .copyWith(color: AppColors.primary),
-                      ),
-                    ],
-                  ),
-                  VerticalSpacing(5),
-                  Row(
-                    children: [
-                      Text(
-                        "Discount: ",
-                        style: TextStyling.h4
-                            .copyWith(color: AppColors.black),
-                      ),
-                      Text(
-                        "150 PKR",
-                        style: TextStyling.h4
-                            .copyWith(color: AppColors.primary),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Total: ",
-                    style: TextStyling.h3
-                        .copyWith(color: AppColors.black),
-                  ),
-                  Text(
-                    "1200 PKR",
-                    style: TextStyling.h3
-                        .copyWith(color: AppColors.primary),
                   ),
                 ],
               ),
@@ -142,8 +82,12 @@ class CartTile extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomRight,
-            child: Icon(Icons.delete_forever_outlined,color: AppColors.primary,size: 24,),
-          )
+            child: InkWell(
+              onTap: (){
+                onDelete();
+              },
+                child: Icon(Icons.delete_forever_outlined,color: AppColors.primary,size: 24,)),
+          ),
         ],
       ),
     );

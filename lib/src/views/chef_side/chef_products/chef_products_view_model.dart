@@ -38,7 +38,7 @@ class ChefProductsViewModel extends ReactiveViewModel with AuthViewModel, Fireba
 
   Future<void> getProducts(BuildContext context,String userId)async {
 
-    List<ProductModel> isAdded = await firebaseService.getProducts(userId, context);
+    List<ProductModel> isAdded = await firebaseService.getProductsByChef(userId, context);
 
     if(isAdded.isNotEmpty){
       productData = isAdded;

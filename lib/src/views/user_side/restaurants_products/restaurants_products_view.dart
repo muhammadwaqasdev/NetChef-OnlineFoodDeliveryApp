@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:net_chef/generated/images.asset.dart';
 import 'package:net_chef/src/base/utils/utils.dart';
+import 'package:net_chef/src/configs/app_setup.router.dart';
+import 'package:net_chef/src/models/user.dart';
 import 'package:net_chef/src/services/local/navigation_service.dart';
 import 'package:net_chef/src/shared/app_screen.dart';
+import 'package:net_chef/src/shared/loading_indicator.dart';
 import 'package:net_chef/src/shared/spacing.dart';
 import 'package:net_chef/src/shared/user/product_tile.dart';
 import 'package:net_chef/src/shared/user/user_app_bar.dart';
@@ -13,11 +16,15 @@ import 'package:net_chef/src/views/user_side/restaurants_products/restaurants_pr
 import 'package:stacked/stacked.dart';
 
 class RestaurantsProductsView extends StatelessWidget {
+  final ChefUser chefId;
+
+  const RestaurantsProductsView({Key? key, required this.chefId}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<RestaurantsProductsViewModel>.reactive(
         builder: (context, model, child) {
-          return AppScreen(
+          return (model.isBusy) ?
+          Center(child: LoadingIndicator(color: AppColors.primary,)) : AppScreen(
             isHereFloatButton: true,
               isPrimary: false,
               child: Stack(
@@ -32,7 +39,8 @@ class RestaurantsProductsView extends StatelessWidget {
                     children: [
                       UserSecondaryAppBar(
                         isCart: false,
-                        title: "Cart",
+                        title: "",
+                        cartCount: model.cartService.totalQuantity,
                         onProfileTap: () => NavService.userCart(),
                         onBackTap: () => Navigator.pop(context),
                       ),
@@ -96,7 +104,7 @@ class RestaurantsProductsView extends StatelessWidget {
                                   // width: 50,
                                   borderRadius: BorderRadius.circular(100),
                                   child: Image.network(
-                                    "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
+                                    chefId.businessIcon ?? "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -109,7 +117,7 @@ class RestaurantsProductsView extends StatelessWidget {
                               child: Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Burger King ",
+                                  chefId.businessName ?? "",
                                   style: TextStyling.h1
                                       .copyWith(color: AppColors.primary),
                                 ),
@@ -123,35 +131,17 @@ class RestaurantsProductsView extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              "Categories",
+                              "All Products",
                               style: TextStyling.h3
                                   .copyWith(color: AppColors.darkGrey),
                             ),
                           ],
                         ),
                       ),
-                      VerticalSpacing(10),
-                      SizedBox(
-                        height: 30,
-                        child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 10,
-                            itemBuilder: (itemBuilder, index) {
-                              return _categoryTile(
-                                  index: index,
-                                  totalCount: 10,
-                                  onTap: () {
-                                    model.selectedIndex = index;
-                                    model.notifyListeners();
-                                  },
-                                  selectedIndex: model.selectedIndex);
-                            }),
-                      ),
                       SizedBox(
                         height: context.screenSize().height - 355,
                         child: GridView.builder(
-                          itemCount: 10,
+                          itemCount: model.productModel.length,
                           physics: BouncingScrollPhysics(),
                           padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                           shrinkWrap: true,
@@ -162,9 +152,9 @@ class RestaurantsProductsView extends StatelessWidget {
                               mainAxisSpacing: 21.0),
                           itemBuilder: (BuildContext context, int index) {
                             return ProductTile(
-                                title: "Zinger Burger",
-                                image: Images.burger,
-                                price: "Rs.249",
+                                title: model.productModel[index].pName ?? "",
+                                image: model.productModel[index].pic ?? "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png",
+                                price: "Rs.${model.productModel[index].pPrice}",
                                 quantity: model.productSelectedCount[index],
                                 onCartTap: () {},
                                 onPlusTap: () {
@@ -178,7 +168,7 @@ class RestaurantsProductsView extends StatelessWidget {
                                   }
                                 },
                                 onTap: () {
-                                  NavService.productDetail();
+                                  NavService.productDetail(arguments: ProductDetailViewArguments(productModel: model.productModel[index], count: model.productSelectedCount[index]));
                                 });
                           },
                         ),
@@ -188,35 +178,7 @@ class RestaurantsProductsView extends StatelessWidget {
                 ],
               ));
         },
-        viewModelBuilder: () => RestaurantsProductsViewModel(),
-        onModelReady: (model) => model.init(context, 10));
-  }
-
-  _categoryTile(
-      {required int index,
-      required int totalCount,
-      required Function onTap,
-      required int selectedIndex}) {
-    return GestureDetector(
-      onTap: () {
-        onTap();
-      },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(
-            (index == 0) ? 19 : 10, 0, (index == (totalCount - 1)) ? 20 : 0, 0),
-        decoration: BoxDecoration(
-            color: (index == selectedIndex)
-                ? AppColors.primary
-                : AppColors.darkGrey,
-            borderRadius: BorderRadius.circular(30)),
-        padding: EdgeInsets.fromLTRB(12, 5, 15, 5),
-        child: Center(
-          child: Text(
-            "Popular $index",
-            style: TextStyling.normalText.copyWith(color: AppColors.white),
-          ),
-        ),
-      ),
-    );
+        viewModelBuilder: () => RestaurantsProductsViewModel(chefId: chefId),
+        onModelReady: (model) => model.init(context, model.productModel.length));
   }
 }

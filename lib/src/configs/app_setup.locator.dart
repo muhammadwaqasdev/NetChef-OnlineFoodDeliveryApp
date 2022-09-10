@@ -10,6 +10,7 @@ import 'package:stacked_core/stacked_core.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../services/local/auth_service.dart';
+import '../services/local/cart_service.dart';
 import '../services/local/connectivity_service.dart';
 import '../services/local/keyboard_service.dart';
 import '../services/remote/api_service.dart';
@@ -32,4 +33,5 @@ Future<void> setupLocator(
   locator.registerLazySingleton(() => KeyboardService());
   locator.registerLazySingleton(() => ApiService());
   locator.registerLazySingleton(() => FirebaseService());
+  locator.registerLazySingleton(() => CartService());
 }

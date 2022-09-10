@@ -28,6 +28,7 @@ class UserCartView extends StatelessWidget {
               appBar: UserSecondaryAppBar(
                 isCart: true,
                 title: "Cart",
+                cartCount: model.cartService.totalQuantity,
                 onProfileTap: () => () {},
                 onBackTap: () => Navigator.pop(context),
               ),
@@ -37,16 +38,60 @@ class UserCartView extends StatelessWidget {
                   SizedBox(
                     height: context
                         .screenSize()
-                        .height - 170,
+                        .height - 230,
                     child: ListView.builder(
                         physics: BouncingScrollPhysics(),
-                        itemCount: 20,
+                        itemCount: model.cartService.cartProducts.length,
                         itemBuilder: (context, index) {
-                          return CartTile();
+                          return CartTile(cartProductModel: model.cartService.cartProducts[index], onDelete: (){
+                            model.cartService.cartProducts.remove(model.cartService.cartProducts[index]);
+                            model.cartService.totalQuantity = (model.cartService.totalQuantity!.toDouble() - double.parse(model.cartService.cartProducts[index].quantity ?? "0")).toInt();
+                            model.cartService.totalAmount = (model.cartService.totalAmount!.toDouble() - double.parse(model.cartService.cartProducts[index].totalItemPrice ?? "0")).toInt();
+                          },);
                         }),
                   ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                    ),
+                    padding: EdgeInsets.only(left: 20),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Total Items: ",
+                              style: TextStyling.h4
+                                  .copyWith(color: AppColors.black),
+                            ),
+                            Text(
+                              "${model.cartService.totalQuantity.toString()}",
+                              style: TextStyling.h4
+                                  .copyWith(color: AppColors.primary),
+                            ),
+                          ],
+                        ),
+                        VerticalSpacing(15),
+                        Row(
+                          children: [
+                            Text(
+                              "Total Amount: ",
+                              style: TextStyling.h4
+                                  .copyWith(color: AppColors.black),
+                            ),
+                            Text(
+                              "${model.cartService.totalAmount.toString()} PKR",
+                              style: TextStyling.h4
+                                  .copyWith(color: AppColors.primary),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  VerticalSpacing(5),
                   MainButton(title: "Place Order", onTap: (){
-                    NavService.userDashboard();
+                    model.onOrder(context);
                   },borderRadius: BorderRadius.zero,
                     isBusy: model.isBusy,),
                 ],

@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:net_chef/generated/images.asset.dart';
 import 'package:net_chef/src/base/utils/utils.dart';
+import 'package:net_chef/src/configs/app_setup.router.dart';
 import 'package:net_chef/src/services/local/navigation_service.dart';
 import 'package:net_chef/src/shared/app_screen.dart';
+import 'package:net_chef/src/shared/loading_indicator.dart';
 import 'package:net_chef/src/shared/user/user_app_bar.dart';
 import 'package:net_chef/src/shared/drawer_container.dart';
 import 'package:net_chef/src/shared/search_field.dart';
@@ -12,6 +14,7 @@ import 'package:net_chef/src/shared/user/user_drawer.dart';
 import 'package:net_chef/src/shared/user/resturent_cart.dart';
 import 'package:net_chef/src/styles/app_colors.dart';
 import 'package:net_chef/src/styles/text_theme.dart';
+import 'package:net_chef/src/views/user_side/user_dashboard/HomeSearch/home_search_view.dart';
 import 'package:net_chef/src/views/user_side/user_dashboard/user_dashboard_view_model.dart';
 import 'package:stacked/stacked.dart';
 
@@ -33,10 +36,14 @@ class UserDashboardView extends StatelessWidget {
                   onDrawerIconTap: () =>
                       model.drawerContainerController.toggleDrawer(),
                   onGoCartTap: () => NavService.userCart(),
+                  user: model.currentUser,
                 ),
-                child: Column(
+                child: (model.isBusy) ? Center(child: LoadingIndicator(color: AppColors.primary,)) : Column(
                   children: [
-                    SearchInput(onChanged: (val) {},onFieldSubmitted: (val){}),
+                    SearchInput(onTap: (){
+                      showSearch(
+                          context: context, delegate: HomeSearchView());
+                      },),
                     Padding(
                       padding: EdgeInsets.only(left: 20, right: 20, top: 20),
                       child: Row(
@@ -55,11 +62,11 @@ class UserDashboardView extends StatelessWidget {
                       child: ListView.builder(
                         physics: BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemCount: 10,
-                          itemBuilder: (itemBuilder, a) {
-                            return _categoryTile(index: a, totalCount: 10,onTap: (){
-                              NavService.userCategories();
-                            });
+                          itemCount: model.categoryModel.length,
+                          itemBuilder: (itemBuilder, index) {
+                            return _categoryTile(index: index, totalCount: model.categoryModel.length,onTap: (){
+                              NavService.userCategories(arguments: UserCategoriesViewArguments(categoryId: model.categoryModel[index].id ?? ""));
+                            }, text: model.categoryModel[index].pName ?? "");
                           }),
                     ),
                     Padding(
@@ -78,11 +85,11 @@ class UserDashboardView extends StatelessWidget {
                       height: context.screenSize().height - 310,
                       child: ListView.builder(
                           physics: BouncingScrollPhysics(),
-                          itemCount: 20,
+                          itemCount: model.topChefModel.length,
                           itemBuilder: (context, index) {
                             return RestaurantCart(onTap: (){
-                              NavService.restaurantsProducts();
-                            },);
+                              NavService.restaurantsProducts(arguments: RestaurantsProductsViewArguments(chefId: model.topChefModel[index]));
+                            }, topChefModel: model.topChefModel[index],);
                           }),
                     ),
                   ],
@@ -93,7 +100,7 @@ class UserDashboardView extends StatelessWidget {
         onModelReady: (model) => model.init(context));
   }
 
-  _categoryTile({required int index, required int totalCount, required Function onTap}) {
+  _categoryTile({required String text,required int index, required int totalCount, required Function onTap}) {
     return InkWell(
       onTap: (){
         onTap();
@@ -104,17 +111,17 @@ class UserDashboardView extends StatelessWidget {
             (index == 0) ? 19 : 10, 0, (index == (totalCount - 1)) ? 20 : 0, 0),
         decoration: BoxDecoration(
             color: AppColors.primary, borderRadius: BorderRadius.circular(30)),
-        padding: EdgeInsets.fromLTRB(12, 0, 15, 0),
+        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
         child: Row(
           children: [
-            Image.asset(
-              Images.burgerVector,
-              height: 24,
-              width: 24,
-            ),
-            HorizontalSpacing(10),
+            // Image.asset(
+            //   Images.burgerVector,
+            //   height: 24,
+            //   width: 24,
+            // ),
+            // HorizontalSpacing(10),
             Text(
-              "Burger",
+              text,
               style: TextStyling.normalText.copyWith(color: AppColors.white),
             ),
           ],

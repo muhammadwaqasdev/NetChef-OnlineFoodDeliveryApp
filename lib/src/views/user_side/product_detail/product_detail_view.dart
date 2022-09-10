@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:net_chef/generated/images.asset.dart';
+import 'package:net_chef/src/base/utils/utils.dart';
+import 'package:net_chef/src/models/product.dart';
 import 'package:net_chef/src/services/local/navigation_service.dart';
 import 'package:net_chef/src/shared/app_screen.dart';
 import 'package:net_chef/src/shared/buttons.dart';
@@ -12,6 +14,10 @@ import 'package:net_chef/src/views/user_side/product_detail/product_detail_view_
 import 'package:stacked/stacked.dart';
 
 class ProductDetailView extends StatelessWidget {
+  final ProductModel productModel;
+  final int count;
+
+  const ProductDetailView({Key? key, required this.productModel, required this.count}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductDetailViewModel>.reactive(
@@ -32,12 +38,13 @@ class ProductDetailView extends StatelessWidget {
                       children: [
                         UserSecondaryAppBar(
                           isCart: false,
-                          title: "Cart",
+                          title: "",
+                          cartCount: model.cartService.totalQuantity,
                           onProfileTap: () => NavService.userCart(),
                           onBackTap: () => Navigator.pop(context),
                         ),
-                        Image.asset(
-                          Images.burger,
+                        Image.network(
+                          productModel.pic ?? "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png",
                           height: 200,
                           width: 220,
                         ),
@@ -88,7 +95,7 @@ class ProductDetailView extends StatelessWidget {
                         ),
                         VerticalSpacing(15),
                         Text(
-                          "Zinger Burger",
+                          productModel.pName ?? "",
                           style: TextStyling.h1,
                         ),
                         VerticalSpacing(15),
@@ -98,7 +105,7 @@ class ProductDetailView extends StatelessWidget {
                             children: [
                               RichText(
                                 text: TextSpan(
-                                  text: "Rs.249",
+                                  text: "Rs.${productModel.pPrice}",
                                   style:
                                       TextStyling.h3.copyWith(color: AppColors.red),
                                   children: <TextSpan>[
@@ -116,7 +123,7 @@ class ProductDetailView extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           child: Text(
-                            "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. Wikipedia",
+                            productModel.pDes ?? "",
                             style: TextStyling.paragraphTheme.copyWith(color: AppColors.darkGrey,wordSpacing: 1.5,letterSpacing: 1.5),
                           ),
                         ),
@@ -134,16 +141,24 @@ class ProductDetailView extends StatelessWidget {
                         ),
                         VerticalSpacing(15),
                         SizedBox(
-                          height: 90,
+                          height: 50,
+                          width: context.screenSize().width,
                           child: ListView.builder(
                               physics: BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: 5,
+                              itemCount: productModel.ingrediantsModel?.length ?? 0,
                               itemBuilder: (itemBuilder, index) {
-                                return _categoryTile(index: index, totalCount: 5, onTap: (){
+                                return _categoryTile(index: index, totalCount: productModel.ingrediantsModel?.length ?? 0, onTap: (){
+                                  if(model.isSelected[index] == false){
+                                    model.selectedIngrediants.add(productModel.ingrediantsModel?[index].name ?? "");
+                                    print(model.selectedIngrediants);
+                                  } else if(model.isSelected[index] == true) {
+                                    model.selectedIngrediants.remove(productModel.ingrediantsModel?[index].name ?? "");
+                                    print(model.selectedIngrediants);
+                                  }
                                   model.isSelected[index] = !model.isSelected[index];
                                   model.notifyListeners();
-                                }, isSelected: model.isSelected[index]);
+                                }, isSelected: model.isSelected[index], ingrediantsModel: productModel.ingrediantsModel![index]);
                               }),
                         ),
                         VerticalSpacing(100)
@@ -154,26 +169,30 @@ class ProductDetailView extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                        child: MainButton(title: "Add to Backet   (Rs325)", onTap: (){},
+                        child: MainButton(title: "Add to Bucket", onTap: (){
+                          model.onAddInCart();
+                        },
                           isBusy: model.isBusy,)),
                   ),
                 ],
               ));
         },
-        viewModelBuilder: () => ProductDetailViewModel(),
-        onModelReady: (model) => model.init(context,5));
+        viewModelBuilder: () => ProductDetailViewModel(productModel),
+        onModelReady: (model) => model.init(context,productModel.ingrediantsModel?.length ?? 0,count));
   }
 
   _categoryTile(
       {required int index,
       required int totalCount,
       required Function onTap,
+        required IngrediantsModel ingrediantsModel,
       required bool isSelected}) {
     return GestureDetector(
       onTap: () {
         onTap();
       },
       child: Container(
+        width: 100,
         margin: EdgeInsets.fromLTRB(
             (index == 0) ? 19 : 10, 0, (index == (totalCount - 1)) ? 20 : 0, 0),
         decoration: BoxDecoration(
@@ -182,15 +201,11 @@ class ProductDetailView extends StatelessWidget {
                 : AppColors.darkGrey,
             borderRadius: BorderRadius.circular(12)),
         padding: EdgeInsets.fromLTRB(12, 5, 15, 5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Image.asset(Images.burger,height: 48,width: 48,),
-            Text(
-              "Popular $index",
-              style: TextStyling.normalText.copyWith(color: AppColors.white),
-            ),
-          ],
+        child: Center(
+          child: Text(
+            ingrediantsModel.name ?? "",
+            style: TextStyling.h4.copyWith(color: AppColors.white),
+          ),
         ),
       ),
     );

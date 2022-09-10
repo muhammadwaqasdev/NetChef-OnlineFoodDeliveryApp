@@ -6,11 +6,12 @@
 
 // ignore_for_file: public_member_api_docs, unused_import, non_constant_identifier_names
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import '../models/product.dart';
+import '../models/user.dart';
 import '../views/auth/forgot_password/forgot_password_view.dart';
 import '../views/auth/login/login_view.dart';
 import '../views/auth/signup/signup_view.dart';
@@ -19,6 +20,7 @@ import '../views/chef_side/chef_dashboard/chef_dashboard_view.dart';
 import '../views/chef_side/chef_orders/chef_orders_view.dart';
 import '../views/chef_side/chef_products/chef_products_view.dart';
 import '../views/splash/splash_view.dart';
+import '../views/user_side/make_own/make_own_view.dart';
 import '../views/user_side/product_detail/product_detail_view.dart';
 import '../views/user_side/restaurants_products/restaurants_products_view.dart';
 import '../views/user_side/user_cart/user_cart_view.dart';
@@ -35,6 +37,7 @@ class Routes {
   static const String userCartView = '/user-cart-view';
   static const String restaurantsProductsView = '/restaurants-products-view';
   static const String productDetailView = '/product-detail-view';
+  static const String makeOwnView = '/make-own-view';
   static const String chefDashboardView = '/chef-dashboard-view';
   static const String chefOrdersView = '/chef-orders-view';
   static const String chefProductsView = '/chef-products-view';
@@ -49,6 +52,7 @@ class Routes {
     userCartView,
     restaurantsProductsView,
     productDetailView,
+    makeOwnView,
     chefDashboardView,
     chefOrdersView,
     chefProductsView,
@@ -69,6 +73,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.userCartView, page: UserCartView),
     RouteDef(Routes.restaurantsProductsView, page: RestaurantsProductsView),
     RouteDef(Routes.productDetailView, page: ProductDetailView),
+    RouteDef(Routes.makeOwnView, page: MakeOwnView),
     RouteDef(Routes.chefDashboardView, page: ChefDashboardView),
     RouteDef(Routes.chefOrdersView, page: ChefOrdersView),
     RouteDef(Routes.chefProductsView, page: ChefProductsView),
@@ -112,8 +117,12 @@ class StackedRouter extends RouterBase {
       );
     },
     UserCategoriesView: (data) {
+      var args = data.getArgs<UserCategoriesViewArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => UserCategoriesView(),
+        builder: (context) => UserCategoriesView(
+          key: args.key,
+          categoryId: args.categoryId,
+        ),
         settings: data,
       );
     },
@@ -124,14 +133,29 @@ class StackedRouter extends RouterBase {
       );
     },
     RestaurantsProductsView: (data) {
+      var args = data.getArgs<RestaurantsProductsViewArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => RestaurantsProductsView(),
+        builder: (context) => RestaurantsProductsView(
+          key: args.key,
+          chefId: args.chefId,
+        ),
         settings: data,
       );
     },
     ProductDetailView: (data) {
+      var args = data.getArgs<ProductDetailViewArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => ProductDetailView(),
+        builder: (context) => ProductDetailView(
+          key: args.key,
+          productModel: args.productModel,
+          count: args.count,
+        ),
+        settings: data,
+      );
+    },
+    MakeOwnView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => MakeOwnView(),
         settings: data,
       );
     },
@@ -171,6 +195,29 @@ class ForgotPasswordViewArguments {
   final Key? key;
   final bool isCustomerSelected;
   ForgotPasswordViewArguments({this.key, required this.isCustomerSelected});
+}
+
+/// UserCategoriesView arguments holder class
+class UserCategoriesViewArguments {
+  final Key? key;
+  final String categoryId;
+  UserCategoriesViewArguments({this.key, required this.categoryId});
+}
+
+/// RestaurantsProductsView arguments holder class
+class RestaurantsProductsViewArguments {
+  final Key? key;
+  final ChefUser chefId;
+  RestaurantsProductsViewArguments({this.key, required this.chefId});
+}
+
+/// ProductDetailView arguments holder class
+class ProductDetailViewArguments {
+  final Key? key;
+  final ProductModel productModel;
+  final int count;
+  ProductDetailViewArguments(
+      {this.key, required this.productModel, required this.count});
 }
 
 /// ************************************************************************
@@ -263,6 +310,8 @@ extension NavigatorStateExtension on NavigationService {
   }
 
   Future<dynamic> navigateToUserCategoriesView({
+    Key? key,
+    required String categoryId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -271,6 +320,7 @@ extension NavigatorStateExtension on NavigationService {
   }) async {
     return navigateTo(
       Routes.userCategoriesView,
+      arguments: UserCategoriesViewArguments(key: key, categoryId: categoryId),
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,
@@ -295,6 +345,8 @@ extension NavigatorStateExtension on NavigationService {
   }
 
   Future<dynamic> navigateToRestaurantsProductsView({
+    Key? key,
+    required ChefUser chefId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -303,6 +355,7 @@ extension NavigatorStateExtension on NavigationService {
   }) async {
     return navigateTo(
       Routes.restaurantsProductsView,
+      arguments: RestaurantsProductsViewArguments(key: key, chefId: chefId),
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,
@@ -311,6 +364,9 @@ extension NavigatorStateExtension on NavigationService {
   }
 
   Future<dynamic> navigateToProductDetailView({
+    Key? key,
+    required ProductModel productModel,
+    required int count,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -319,6 +375,24 @@ extension NavigatorStateExtension on NavigationService {
   }) async {
     return navigateTo(
       Routes.productDetailView,
+      arguments: ProductDetailViewArguments(
+          key: key, productModel: productModel, count: count),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
+  }
+
+  Future<dynamic> navigateToMakeOwnView({
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return navigateTo(
+      Routes.makeOwnView,
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,

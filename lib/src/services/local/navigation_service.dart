@@ -52,6 +52,9 @@ class NavService {
   static Future<dynamic>? productDetail({dynamic arguments}) => _navigationService!
       .navigateTo(Routes.productDetailView, arguments: arguments);
 
+  static Future<dynamic>? makeOwn({dynamic arguments}) => _navigationService!
+      .navigateTo(Routes.makeOwnView, arguments: arguments);
+
 
 
 

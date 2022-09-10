@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:net_chef/src/services/local/navigation_service.dart';
 import 'package:net_chef/src/styles/app_colors.dart';
 import 'package:net_chef/src/styles/text_theme.dart';
 
@@ -42,7 +43,9 @@ class AppScreen extends StatelessWidget {
               extendBodyBehindAppBar: extendBodyBehindAppBar,
               appBar: appBar,
               body: child,
-              floatingActionButton: (isHereFloatButton) ? FloatCustomBtn(title: "Make\nOwn", onTap: (){}) : null,
+              floatingActionButton: (isHereFloatButton) ? FloatCustomBtn(title: "Make\nOwn", onTap: (){
+                NavService.makeOwn();
+              }) : null,
             ),
         );
   }

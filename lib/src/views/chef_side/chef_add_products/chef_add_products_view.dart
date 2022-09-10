@@ -6,6 +6,7 @@ import 'package:net_chef/src/base/utils/utils.dart';
 import 'package:net_chef/src/shared/app_screen.dart';
 import 'package:net_chef/src/shared/buttons.dart';
 import 'package:net_chef/src/shared/chef/chef_app_bar.dart';
+import 'package:net_chef/src/shared/chef/multi_input_field.dart';
 import 'package:net_chef/src/shared/input_field.dart';
 import 'package:net_chef/src/shared/load_image.dart';
 import 'package:net_chef/src/shared/loading_indicator.dart';
@@ -60,7 +61,7 @@ class ChefAddProductsView extends StatelessWidget {
                                   CustomInput(
                                     isPassword: false,
                                     label: "Price",
-                                    inputType: TextInputType.multiline,
+                                    inputType: TextInputType.number,
                                     controller: model.productPrice,
                                     onTap: () {},
                                     hint: "Enter Product Price", onChanged: (String value) {  },),
@@ -155,6 +156,11 @@ class ChefAddProductsView extends StatelessWidget {
                                     controller: model.productDes,
                                     onTap: () {},
                                     hint: "Enter Product Description", onChanged: (String value) {  },),
+                                  multiSelectionField(onChanged: (val){
+                                      model.ingList = val as List<String>;
+                                      model.ingrediant.clear();
+                                      model.notifyListeners();
+                                  }, values: model.ingList, name: model.ingrediant)
                                 ],
                               ),
                               VerticalSpacing(30),

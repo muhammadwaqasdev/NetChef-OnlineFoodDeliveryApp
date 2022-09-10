@@ -25,7 +25,9 @@ class ChefAddProductsViewModel extends ReactiveViewModel with AuthViewModel, Fir
   TextEditingController productPrice = TextEditingController();
   TextEditingController productCat = TextEditingController();
   TextEditingController productDes = TextEditingController();
+  TextEditingController ingrediant = TextEditingController();
 
+  List<String> ingList = [];
   
   String productPicture = "";
 
@@ -47,12 +49,13 @@ class ChefAddProductsViewModel extends ReactiveViewModel with AuthViewModel, Fir
     productCat.clear();
     productDes.clear();
     productPicture = "";
+    ingList = [];
     selectedImage?.delete();
   }
 
 
   Future<void> checkValidate(BuildContext context, BuildContext cont) async {
-    if (m.Form.of(context)?.validate() ?? false) {
+    if (m.Form.of(context)?.validate() ?? false || selectedImage != null) {
       setBusy(true);
       await setProduct(context, cont);
       setBusy(false);
@@ -67,6 +70,10 @@ class ChefAddProductsViewModel extends ReactiveViewModel with AuthViewModel, Fir
       pCat: productCat.text,
       pDes: productDes.text,
       pic: "",
+      ingrediantsModel: ingList.map((e) => IngrediantsModel(
+        name: e,
+        image: "",
+      )).toList()
     );
     bool isAdded = await firebaseService.createProduct(newProductModel, selectedImage, context, currentUser.id ?? "", currentUser.currentProducts ?? 0);
 
