@@ -83,104 +83,127 @@ class StackedRouter extends RouterBase {
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, StackedRouteFactory>{
     SplashView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => SplashView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => SplashView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     LoginView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => LoginView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => LoginView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     SignupView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => SignupView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => SignupView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     ForgotPasswordView: (data) {
       var args = data.getArgs<ForgotPasswordViewArguments>(nullOk: false);
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => ForgotPasswordView(
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ForgotPasswordView(
           key: args.key,
           isCustomerSelected: args.isCustomerSelected,
         ),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     UserDashboardView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => UserDashboardView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            UserDashboardView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     UserCategoriesView: (data) {
       var args = data.getArgs<UserCategoriesViewArguments>(nullOk: false);
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => UserCategoriesView(
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            UserCategoriesView(
           key: args.key,
           categoryId: args.categoryId,
         ),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     UserCartView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => UserCartView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => UserCartView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     RestaurantsProductsView: (data) {
       var args = data.getArgs<RestaurantsProductsViewArguments>(nullOk: false);
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => RestaurantsProductsView(
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            RestaurantsProductsView(
           key: args.key,
           chefId: args.chefId,
         ),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     ProductDetailView: (data) {
       var args = data.getArgs<ProductDetailViewArguments>(nullOk: false);
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => ProductDetailView(
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ProductDetailView(
           key: args.key,
           productModel: args.productModel,
           count: args.count,
         ),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     MakeOwnView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => MakeOwnView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => MakeOwnView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     ChefDashboardView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => ChefDashboardView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ChefDashboardView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     ChefOrdersView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => ChefOrdersView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ChefOrdersView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     ChefProductsView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => ChefProductsView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ChefProductsView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
     ChefAddProductsView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => ChefAddProductsView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ChefAddProductsView(),
         settings: data,
+        transitionsBuilder: data.transition ?? TransitionsBuilders.fadeIn,
       );
     },
   };

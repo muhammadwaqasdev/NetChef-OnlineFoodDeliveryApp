@@ -170,7 +170,7 @@ class ProductDetailView extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                         child: MainButton(title: "Add to Bucket", onTap: (){
-                          model.onAddInCart();
+                          model.onAddInCart(context);
                         },
                           isBusy: model.isBusy,)),
                   ),

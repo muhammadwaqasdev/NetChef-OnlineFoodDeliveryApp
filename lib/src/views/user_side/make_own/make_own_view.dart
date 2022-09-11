@@ -19,10 +19,19 @@ class MakeOwnView extends StatefulWidget {
 }
 
 class _MakeOwnViewState extends State<MakeOwnView>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
+  late AnimationController _rotateAnimationController;
   List<Animation> _animationList = <Animation>[];
-  double pizzaWidth = 0.0;
+  late BoxConstraints _pizzaConstraints;
+
+  late Animation<double> rotateAnimation;
+
+
+  setRotation(int degree){
+    final angle = degree * 3.1415927 / 180;
+    rotateAnimation = Tween<double>(begin: 0, end: angle).animate(_animationController);
+  }
 
   void buildIngedientsAnimation() {
     _animationList.clear();
@@ -31,10 +40,16 @@ class _MakeOwnViewState extends State<MakeOwnView>
         curve: Interval(0.0, 0.8, curve: Curves.decelerate)));
     _animationList.add(CurvedAnimation(
         parent: _animationController,
+        curve: Interval(0.2, 0.8, curve: Curves.decelerate)));
+    _animationList.add(CurvedAnimation(
+        parent: _animationController,
         curve: Interval(0.4, 1.0, curve: Curves.decelerate)));
     _animationList.add(CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.3, 0.4, curve: Curves.decelerate)));
+        curve: Interval(0.1, 0.7, curve: Curves.decelerate)));
+    _animationList.add(CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(0.3, 1.0, curve: Curves.decelerate)));
   }
 
   @override
@@ -43,12 +58,18 @@ class _MakeOwnViewState extends State<MakeOwnView>
       vsync: this,
       duration: Duration(milliseconds: 900),
     );
+    _rotateAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 700),
+    );
+    setRotation(360);
     super.initState();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _rotateAnimationController.dispose();
     super.dispose();
   }
 
@@ -56,7 +77,7 @@ class _MakeOwnViewState extends State<MakeOwnView>
   Widget build(BuildContext context) {
     return ViewModelBuilder<MakeOwnViewModel>.reactive(
         builder: (context, model, child) {
-          child(){
+          Widget _child(){
             if (_animationList.isNotEmpty) {
               for (int i = 0; i < model.selectedIngrediants.length; i++) {
                 MakeOwnIngrediant ingrediant = model.selectedIngrediants[i];
@@ -66,34 +87,49 @@ class _MakeOwnViewState extends State<MakeOwnView>
                   final positionX = position.dx;
                   final positionY = position.dy;
                   double fromX = 0.0, fromY = 0.0;
-                  pizzaWidth = context.screenSize().width ;
                   if (j < 1) {
-                    fromX = -context.screenSize().width * (1 - animation.value);
+                    fromX = -_pizzaConstraints.maxWidth * (1 - animation.value);
                   } else if (j < 2) {
-                    fromX = context.screenSize().width * (1 - animation.value);
+                    fromX = _pizzaConstraints.maxWidth * (1 - animation.value);
                   } else if (j < 4) {
-                    fromY = -context.screenSize().height * (1 - animation.value);
+                    fromY = -_pizzaConstraints.maxHeight * (1 - animation.value);
                   } else {
-                    fromY = context.screenSize().height * (1 - animation.value);
+                    fromY = _pizzaConstraints.maxHeight * (1 - animation.value);
                   }
 
-                  model.elements.add(
-                    Transform(
-                        transform: Matrix4.identity()
-                          ..translate(
-                            fromX + context.screenSize().width * positionX,
-                            fromY + context.screenSize().height / 2 * positionY,
-                          ),
-                        child: Image.asset(
-                          ingrediant.image,
-                          height: 40,
-                        )),
-                  );
-                  return Stack(
-                    children: model.elements,
-                  );
+                  if(animation.value > 0) {
+                    model.elements.add(
+                      Transform(
+                          transform: Matrix4.identity()
+                            ..translate(
+                              fromX + _pizzaConstraints.maxWidth * positionX,
+                              fromY + _pizzaConstraints.maxHeight * positionY,
+                            ),
+                          child: Image.asset(
+                            ingrediant.image,
+                            height: 40,
+                          )),
+                    );
+                  }else {
+                    model.elements.add(
+                      Transform(
+                          transform: Matrix4.identity()
+                            ..translate(
+                              _pizzaConstraints.maxWidth * positionX,
+                              _pizzaConstraints.maxHeight * positionY,
+                            ),
+                          child: Image.asset(
+                            ingrediant.image,
+                            height: 40,
+                          )),
+                    );
+                  }
                 }
               }
+
+              return Stack(
+                children: model.elements,
+              );
             }
             return SizedBox.fromSize();
           }
@@ -106,8 +142,16 @@ class _MakeOwnViewState extends State<MakeOwnView>
                     isCart: false,
                     title: "",
                     cartCount: model.cartService.totalQuantity,
-                    onProfileTap: () => NavService.userCart(),
-                    onBackTap: () => Navigator.pop(context),
+                    onProfileTap: () {
+                      NavService.userCart();
+                      _animationList.clear();
+                      model.elements.clear();
+                    },
+                    onBackTap: () {
+                      Navigator.pop(context);
+                      _animationList.clear();
+                      model.elements.clear();
+                    },
                   ),
                   SizedBox(
                     height: context.screenSize().height / 2,
@@ -120,11 +164,15 @@ class _MakeOwnViewState extends State<MakeOwnView>
                               Expanded(
                                 child: DragTarget<MakeOwnIngrediant>(
                                     onAccept: (ingredient) {
-                                  model.selectedIngrediants.add(ingredient);
                                   model.focuced.value = false;
-                                  model.notifyListeners();
+                                  setState(() {
+                                    model.selectedIngrediants.add(ingredient);
+                                    model.price = model.price + 100;
+                                  });
                                   buildIngedientsAnimation();
                                   _animationController.forward(from: 0.0);
+                                  setRotation(360);
+                                  _rotateAnimationController.forward(from: 0);
                                 }, onWillAccept: (ingredient) {
                                   print("onWillAccept");
                                   print(ingredient?.name);
@@ -143,36 +191,60 @@ class _MakeOwnViewState extends State<MakeOwnView>
                                   model.focuced.value = false;
                                   model.notifyListeners();
                                 }, builder: (context, list, reject) {
-                                  return ValueListenableBuilder<bool>(
-                                      valueListenable: model.focuced,
-                                      builder: (context, focused, _) {
-                                        return Stack(
-                                          children: [
-                                            Image.asset(Images.dish),
-                                            Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Image.asset(Images.pizza1),
-                                            ),
-                                          ],
-                                        );
-                                      });
+                                      return LayoutBuilder(
+                                          builder: (context, constraint) {
+                                            _pizzaConstraints = constraint;
+                                            print(constraint);
+                                            return ValueListenableBuilder<bool>(
+                                                valueListenable: model.focuced,
+                                                builder: (context, focused, _) {
+                                                  return AnimatedBuilder(
+                                                      animation: rotateAnimation,
+                                                      child: Stack(
+                                                        children: [
+                                                          Image.asset(Images.dish),
+                                                          Padding(
+                                                            padding: const EdgeInsets.all(10),
+                                                            child: Image.asset(Images.pizza1),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      builder: (context, child) {
+                                                        return Transform.rotate(
+                                                          angle: rotateAnimation.value,
+                                                          child: child,
+                                                        );
+                                                      }
+                                                  );
+                                                });
+                                          }
+                                      );
                                 }),
                               ),
                               VerticalSpacing(15),
-                              Text(
-                                "\$15",
-                                style: TextStyling.h2
-                                    .copyWith(color: AppColors.primary),
-                              ),
+                              AnimatedSwitcher(
+                                duration: Duration(milliseconds: 200),
+                                transitionBuilder:
+                                    (Widget child, Animation<double> animation) {
+                                  return SlideTransition(
+                                    child: child,
+                                    position: Tween<Offset>(
+                                        begin: Offset(0.0, -0.5),
+                                        end: Offset(0.0, 0.0))
+                                        .animate(animation),
+                                  );
+                                },
+                                child: Text(
+                                  "RS. ${model.price}",
+                                  key: UniqueKey(),
+                                  style: TextStyling.h2
+                                      .copyWith(color: AppColors.primary),
+                                ),
+                              )
                             ],
                           ),
                         ),
-                        AnimatedBuilder(
-                          animation: _animationController,
-                          builder: (context, _) {
-                            return child();
-                          }
-                        ),
+                        _child(),
                       ],
                     ),
                   ),
@@ -182,20 +254,29 @@ class _MakeOwnViewState extends State<MakeOwnView>
                         scrollDirection: Axis.horizontal,
                         itemCount: model.ingrediants.length,
                         itemBuilder: (context, index) {
+                          Color color = AppColors.lightGrey;
+                          for (MakeOwnIngrediant i
+                          in model.selectedIngrediants) {
+                            if (i.compare(model.ingrediants[index])) {
+                              color = AppColors.primary.withOpacity(0.5);
+                            }
+                          }
                           return Center(
                             child: Draggable(
-                              feedback: Container(
-                                height: 70,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                    color: AppColors.primary.withOpacity(0.2),
-                                    shape: BoxShape.circle),
-                                child: Center(
-                                    child: Image.asset(
-                                  model.ingrediants[index].image,
+                              feedback: Center(
+                                child: Container(
                                   height: 70,
                                   width: 70,
-                                )),
+                                  decoration: BoxDecoration(
+                                      color: color,
+                                      shape: BoxShape.circle),
+                                  child: Center(
+                                      child: Image.asset(
+                                    model.ingrediants[index].image,
+                                    height: 70,
+                                    width: 70,
+                                  )),
+                                ),
                               ),
                               data: model.ingrediants[index],
                               child: Padding(
@@ -207,8 +288,7 @@ class _MakeOwnViewState extends State<MakeOwnView>
                                       height: 56,
                                       width: 56,
                                       decoration: BoxDecoration(
-                                          color: AppColors.primary
-                                              .withOpacity(0.5),
+                                          color: color,
                                           shape: BoxShape.circle),
                                       child: Center(
                                           child: Image.asset(
@@ -236,7 +316,9 @@ class _MakeOwnViewState extends State<MakeOwnView>
                         child: MainButton(
                           title: "Add to Bucket",
                           onTap: () {
-                            model.onAddInCart();
+                            model.onAddInCart(context);
+                            _animationList.clear();
+                            model.elements.clear();
                           },
                           isBusy: model.isBusy,
                         )),

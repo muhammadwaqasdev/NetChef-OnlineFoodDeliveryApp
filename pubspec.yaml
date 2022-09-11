@@ -45,6 +45,7 @@ dependencies:
   json_annotation: any
   uuid: ^3.0.6
   top_snackbar_flutter: ^2.1.1
+  animated_text_kit: ^4.2.2
 
 
 dev_dependencies:

@@ -18,29 +18,30 @@ import 'package:net_chef/src/views/user_side/restaurants_products/restaurants_pr
 import 'package:net_chef/src/views/user_side/user_cart/user_cart_view.dart';
 import 'package:net_chef/src/views/user_side/user_categories/user_categories_view.dart';
 import 'package:net_chef/src/views/user_side/user_dashboard/user_dashboard_view.dart';
+import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 @StackedApp(
   routes: [
-    MaterialRoute(page: SplashView, initial: true),
-    MaterialRoute(page: LoginView),
-    MaterialRoute(page: SignupView),
-    MaterialRoute(page: ForgotPasswordView),
+    CustomRoute(page: SplashView, initial: true, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: LoginView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: SignupView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: ForgotPasswordView, transitionsBuilder: TransitionsBuilders.fadeIn),
 
 
-    CustomRoute(page: UserDashboardView),
-    MaterialRoute(page: UserCategoriesView),
-    MaterialRoute(page: UserCartView),
-    MaterialRoute(page: RestaurantsProductsView),
-    MaterialRoute(page: ProductDetailView),
-    MaterialRoute(page: MakeOwnView),
+    CustomRoute(page: UserDashboardView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: UserCategoriesView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: UserCartView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: RestaurantsProductsView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: ProductDetailView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: MakeOwnView, transitionsBuilder: TransitionsBuilders.fadeIn),
 
 
-    MaterialRoute(page: ChefDashboardView),
-    MaterialRoute(page: ChefOrdersView),
-    MaterialRoute(page: ChefProductsView),
-    MaterialRoute(page: ChefAddProductsView),
+    CustomRoute(page: ChefDashboardView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: ChefOrdersView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: ChefProductsView, transitionsBuilder: TransitionsBuilders.fadeIn),
+    CustomRoute(page: ChefAddProductsView, transitionsBuilder: TransitionsBuilders.fadeIn),
   ],
   dependencies: [
     // Lazy singletons

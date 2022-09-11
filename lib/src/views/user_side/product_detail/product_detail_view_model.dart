@@ -19,7 +19,7 @@ class ProductDetailViewModel extends ReactiveViewModel with CartServiceViewModel
       isSelected.add(false);
     }
   }
-  onAddInCart(){
+  onAddInCart(BuildContext context){
     int quantity = (double.parse(cartService.totalQuantity.toString()) + double.parse(productSelectedCount.toString())).toInt();
     int amount = (double.parse(cartService.totalAmount.toString()) + (double.parse(productModel.pPrice ?? "0") * double.parse(productSelectedCount.toString()))).toInt();
     CartProductModel cartProductModel = CartProductModel(
@@ -32,6 +32,7 @@ class ProductDetailViewModel extends ReactiveViewModel with CartServiceViewModel
       totalItemPrice: (double.parse(productModel.pPrice ?? "0") * productSelectedCount.toDouble()).toStringAsFixed(0),
     );
     cartService.cartData(quantity,amount,cartProductModel);
+    Navigator.pop(context);
   }
   
 }
